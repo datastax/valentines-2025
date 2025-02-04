@@ -3,7 +3,7 @@
     href="https://langflow.new/valentines">Langflow</a
   > to create a unique and highly personal poem for you this Valentine's day!
 </p>
-<form class="flex items-end gap-2">
+<form id="form" class="flex items-end gap-2">
   <label class="flex flex-col gap-1 text-left">
     <span class="text-sm">Your GitHub username</span>
     <div class="flex items-center">
@@ -13,7 +13,8 @@
         @
       </div>
       <input
-        class="border-neutral-700 text-sm font-mono text-white border-t border-b border-r rounded-r h-10 p-2"
+        id="u"
+        class="border-neutral-700 md:text-sm font-mono text-white border-t border-b border-r rounded-r h-10 p-2"
         type="text"
         name="u"
         autocomplete="off"
@@ -26,3 +27,16 @@
     >Generate</button
   >
 </form>
+<script>
+  import { isLoading } from "../state/loading";
+  const form = document.getElementById("form");
+  const textField = document.getElementById("u");
+  const loaderVideo = document.getElementById(
+    "loader-video"
+  ) as HTMLVideoElement;
+  form.addEventListener("submit", () => {
+    isLoading.set(true);
+    loaderVideo?.play();
+    textField.blur();
+  });
+</script>

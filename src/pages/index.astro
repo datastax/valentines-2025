@@ -1,22 +1,33 @@
 ---
+import "../styles/global.css";
 import clsx from "clsx";
+
 import DatastaxLogo from "../components/DatastaxLogo.astro";
 import Form from "../components/Form.astro";
-import "../styles/global.css";
+
+// @ts-ignore
+import { Loader } from "../components/Loader";
+import { saveToAstra } from "../util/save-to-astra";
+import { getFromAstra } from "../util/get-from-astra";
 
 const url = Astro.request.url;
 const u = Astro.url.searchParams.get("u");
 let poem = "";
 
 if (u && !poem) {
-  const langflowClientModule = await import("@datastax/langflow-client");
-  const client = new langflowClientModule.LangflowClient({
-    baseUrl: "https://langflow.new",
-  });
-  console.log({ client });
-  const flow = client.flow("00c0fa6d-23f1-4582-a906-cf1101c72c3d");
-  const response = await flow.run(u);
-  poem = response.outputs[0].outputs[0].results.message.data.text;
+  const cachedPoem = await getFromAstra({ username: u });
+  if (cachedPoem) {
+    poem = cachedPoem.poem;
+  } else {
+    const langflowClientModule = await import("@datastax/langflow-client");
+    const client = new langflowClientModule.LangflowClient({
+      baseUrl: "https://langflow.new",
+    });
+    const flow = client.flow("00c0fa6d-23f1-4582-a906-cf1101c72c3d");
+    const response = await flow.run(u);
+    poem = response.outputs[0].outputs[0].results.message.data.text;
+    await saveToAstra({ username: u, poem });
+  }
 }
 ---
 
@@ -29,14 +40,17 @@ if (u && !poem) {
     <title>Document</title>
   </head>
   <body class="bg-black text-white">
+    <Loader client:idle />
     <main
       class={clsx(
         "flex flex-col gap-8 p-8 max-w-screen-md mx-auto text-center items-center justify-center content-center",
         !poem && "min-h-screen"
       )}
     >
-      <h1 class="flex w-full justify-center text-4xl items-center gap-4">
-        <div><DatastaxLogo width={300} /></div>
+      <h1
+        class="flex w-full justify-center text-3xl md:text-4xl items-center gap-4"
+      >
+        <div class="w-64"><DatastaxLogo width="100%" /></div>
         <span>×</span>
         <span>
           {
@@ -49,7 +63,7 @@ if (u && !poem) {
                 height="64"
               />
             ) : (
-              "Valentine's Day"
+              "Valentine's"
             )
           }
         </span>
@@ -59,30 +73,30 @@ if (u && !poem) {
           <Form />
         ) : (
           <div class="grid gap-4">
-            <div class="flex gap-2 items-center">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-2 items-center">
               <a
                 href="/"
                 class="bg-white flex items-center text-black p-2 text-sm font-bold h-10 rounded-md"
               >
-                Create Your Own
+                Create Yours
               </a>
               <a
                 href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`Check out my AI-generated Valentine's Day poem from @datastaxdevs! \n\n${url}`)}`}
-                class="bg-neutral-800 hover:bg-neutral-700 flex items-center border border-neutral-700 text-white p-2 text-sm font-bold h-10 rounded-md"
+                class="bg-black hover:bg-neutral-700 flex items-center border border-white text-white p-2 text-sm font-bold h-10 rounded-md"
               >
                 Share on 𝕏
               </a>
               <a
                 onclick="alert('TODO');return false;"
                 href="https://langflow.new/valentines"
-                class="bg-neutral-800 hover:bg-neutral-700 border border-neutral-700 text-white p-2 text-sm font-bold h-10 rounded-md"
+                class="flex items-center bg-neutral-800 hover:bg-neutral-700 border border-neutral-700 text-white p-2 text-sm font-bold h-10 rounded-md"
               >
                 Explore the Flow
               </a>
               <a
                 onclick="alert('TODO');return false;"
                 href="https://youtube.com/watch?v=dQw4w9WgXcQ"
-                class="bg-neutral-800 border hover:bg-neutral-700 border-neutral-700 text-white p-2 text-sm font-bold h-10 rounded-md"
+                class="flex items-center bg-neutral-800 border hover:bg-neutral-700 border-neutral-700 text-white p-2 text-sm font-bold h-10 rounded-md"
               >
                 Learn How it Works
               </a>
