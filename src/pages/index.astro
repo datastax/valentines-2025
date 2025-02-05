@@ -28,8 +28,15 @@ if (u && !poem) {
       baseUrl: "https://langflow.new",
     });
     const flow = client.flow("00c0fa6d-23f1-4582-a906-cf1101c72c3d");
-    const response = await flow.run(u);
-    poem = response.outputs[0].outputs[0].results.message.data.text;
+    const getResponse = async () => {
+      try {
+        return await flow.run(u);
+      } catch (e) {
+        return await getResponse();
+      }
+    };
+    const response = await getResponse();
+    poem = response?.outputs[0]?.outputs[0]?.results?.message?.data?.text;
     await saveToAstra({ username: u, poem });
   }
   ogImageUrl = `${origin}/og?poem=${encodeURIComponent(poem.split("\n\n")[0])}&username=${encodeURIComponent(u)}`;
