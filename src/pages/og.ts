@@ -15,7 +15,7 @@ export const GET: APIRoute = async ({ request }) => {
     <div style="display: flex; flex-direction: column;">${q?.slice(0, 123)}${
     (q?.length ?? 0) > 123 ? "..." : ""
   }</div>
-  <div style="display: flex; justify-content: flex-end;"><img style="border-radius: 50%;" alt="${username}" src="https://github.com/${username}.png" width="250" height="250" /></div>
+  <div style="display: flex; justify-content: flex-end;"><img style="border: 16px solid white; border-radius: 50%;" alt="${username}" src="https://github.com/${username}.png" width="250" height="250" /></div>
   </div>`);
 
   const fontFile = await fetch(`${url.origin}/fonts/sora-instance.ttf`).then(
