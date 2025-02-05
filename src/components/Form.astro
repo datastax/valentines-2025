@@ -23,20 +23,106 @@
   </label>
   <button
     type="submit"
+    id="submit-btn"
     class="bg-white cursor-pointer text-black p-2 text-sm font-bold h-10 rounded-md"
     >Generate</button
   >
 </form>
+<div class="flex flex-col gap-2 w-full hidden" id="loader">
+  <div class="w-full h-2 rounded border-neutral-700 border">
+    <div
+      class="h-full bg-white rounded transition-all"
+      style="width: 0%;"
+      id="progress"
+    >
+    </div>
+  </div>
+  <div class="text-sm text-neutral-400" id="status">Discovering profile...</div>
+</div>
 <script>
-  import { isLoading } from "../state/loading";
+  const statuses = [
+    "Discovering profile...",
+    "Getting to know you...",
+    "It's totally casual...",
+    "Developing a crush...",
+    "Exploring commits...",
+    "Reading code...",
+    "Falling in love...",
+    "It's so over...",
+    "I'm not sure how this happened...",
+    "Emotional wreck...",
+    "Nervous breakdown incoming...",
+    "Joining support group...",
+    "Inspired to write poetry...",
+    "Writing poem...",
+    "We are so back...",
+    "Almost done...",
+    "Hold on tight...",
+    "This is it...",
+    "Done!",
+  ];
   const form = document.getElementById("form");
-  const textField = document.getElementById("u");
-  const loaderVideo = document.getElementById(
-    "loader-video"
-  ) as HTMLVideoElement;
-  form.addEventListener("submit", () => {
-    isLoading.set(true);
-    loaderVideo?.play();
-    textField.blur();
+  const loader = document.getElementById("loader");
+  const progress = document.getElementById("progress");
+  const statusElement = document.getElementById("status");
+  const submitButton = document.getElementById(
+    "submit-btn"
+  ) as HTMLButtonElement;
+  let width = 0;
+  const duration = 45000; // 45 seconds in milliseconds
+  const statusInterval = duration / statuses.length; // Time between status updates
+  const u = document.getElementById("u") as HTMLInputElement;
+
+  function getRandomIncrement() {
+    // Random increment between 0.1 and 2
+    return Math.random() * 1.9 + 0.1;
+  }
+
+  function getRandomDelay() {
+    // Random delay between 100ms and 1000ms
+    return Math.random() * 900 + 100;
+  }
+
+  async function updateProgress() {
+    if (width >= 100) return;
+
+    // Add a random increment
+    width = Math.min(100, width + getRandomIncrement());
+    progress.style.width = width + "%";
+
+    // Schedule next update with random delay
+    if (width < 100) {
+      setTimeout(updateProgress, getRandomDelay());
+    }
+  }
+
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    submitButton.disabled = true;
+    submitButton.classList.add("opacity-50", "cursor-not-allowed");
+    fetch(`/?u=${u.value}`).then(
+      () => (window.location.href = `/?u=${u.value}`)
+    );
+    loader.classList.remove("hidden");
+
+    // Start the sporadic progress updates
+    updateProgress();
+
+    // Update status messages
+    let statusIndex = 0;
+    const statusTimer = setInterval(() => {
+      statusElement.textContent = statuses[statusIndex];
+      statusIndex++;
+      if (statusIndex >= statuses.length) {
+        clearInterval(statusTimer);
+      }
+    }, statusInterval);
+
+    // Ensure we reach 100% after 45 seconds
+    setTimeout(() => {
+      width = 100;
+      progress.style.width = "100%";
+      statusElement.textContent = statuses[statuses.length - 1];
+    }, duration);
   });
 </script>
