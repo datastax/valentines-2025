@@ -35,8 +35,8 @@ export const GET: APIRoute = async ({ request }) => {
     height: 630,
   });
 
-  const png = sharp(Buffer.from(svg)).jpeg({ quality: 90 });
-  const response = await png.toBuffer();
+  const jpg = sharp(Buffer.from(svg)).jpeg({ quality: 90 });
+  const response = await jpg.toBuffer();
 
   return new Response(response, {
     status: 200,
