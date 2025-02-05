@@ -1,55 +1,34 @@
-/**
- * Safari has a known issue with setInterval where it can pause when the tab is inactive
- * or during animations. Using requestAnimationFrame with Date.now() for timing is more reliable.
- */
-
 import clsx from "clsx";
-import { useEffect, useState, useRef } from "react";
+import { useEffect } from "react";
 import { useStore } from "@nanostores/react";
 import { isLoading } from "../state/loading";
-
-const TIMEOUT_SECONDS = 45;
+import { countdown } from "../state/countdown";
 
 export function Loader() {
   const isVisible = useStore(isLoading);
-  const [timeLeft, setTimeLeft] = useState(TIMEOUT_SECONDS);
-  const startTimeRef = useRef<number>(0);
+  const timeLeft = useStore(countdown);
 
   useEffect(() => {
-    if (!isVisible) return;
-
-    startTimeRef.current = Date.now();
-    let animationFrameId: number;
-    const updateTimer = () => {
-      const elapsedSeconds = Math.floor(
-        (Date.now() - startTimeRef.current!) / 1000
-      );
-      const newTimeLeft = Math.max(0, TIMEOUT_SECONDS - elapsedSeconds);
-
-      setTimeLeft(newTimeLeft);
-
-      if (newTimeLeft > 0) {
-        animationFrameId = requestAnimationFrame(updateTimer);
+    if (!isVisible) {
+      countdown.set(45);
+      return;
+    }
+    (async () => {
+      while (timeLeft > 0) {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        countdown.set(timeLeft - 1);
       }
-    };
-
-    animationFrameId = requestAnimationFrame(updateTimer);
-
-    return () => {
-      if (animationFrameId) {
-        cancelAnimationFrame(animationFrameId);
-      }
-    };
-  }, [isVisible]);
+    })();
+  }, [isVisible, timeLeft]);
 
   return (
     <div
+      style={{ transform: "translateZ(0)", willChange: "transform" }}
       className={clsx(
         !isVisible && "hidden",
         "w-screen h-screen fixed top-0 left-0"
       )}
     >
-      {isVisible}
       <video
         preload="auto"
         id="loader-video"
@@ -69,7 +48,11 @@ export function Loader() {
         </span>
         <div className="relative w-24 h-24">
           <div className="absolute top-0 left-0 w-full h-full rounded-full border-4 border-white border-t-transparent animate-spin"></div>
-          <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center text-white text-2xl">
+          <div
+            key={timeLeft}
+            // fuck safari @todo this shouldn't be hidden
+            className="top-0 left-0 w-full h-full hidden items-center justify-center text-white text-2xl"
+          >
             {timeLeft}
           </div>
         </div>

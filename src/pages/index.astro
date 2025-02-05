@@ -49,6 +49,12 @@ if (u && !poem) {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title || "DataStax × Valentine's Day"}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Sora:wght@100..800&display=swap"
+      rel="stylesheet"
+    />
     <meta
       name="description"
       content="Generate a Valentine's Day poem from DataStax to you with AI."
@@ -80,7 +86,6 @@ if (u && !poem) {
     <link rel="manifest" href="/icons/site.webmanifest" />
   </head>
   <body class="bg-black text-white">
-    <Loader client:idle />
     <main
       class={clsx(
         "flex flex-col gap-8 p-8 max-w-screen-md mx-auto text-center items-center justify-center content-center",
@@ -146,5 +151,6 @@ if (u && !poem) {
         )
       }
     </main>
+    <Loader client:only />
   </body>
 </html>
