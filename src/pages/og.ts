@@ -35,13 +35,13 @@ export const GET: APIRoute = async ({ request }) => {
     height: 630,
   });
 
-  const png = sharp(Buffer.from(svg)).png();
+  const png = sharp(Buffer.from(svg)).jpeg({ quality: 90 });
   const response = await png.toBuffer();
 
   return new Response(response, {
     status: 200,
     headers: {
-      "Content-Type": "image/png",
+      "Content-Type": "image/jpeg",
       "Cache-Control": "s-maxage=1, stale-while-revalidate=59",
     },
   });
