@@ -11,10 +11,14 @@ import { saveToAstra } from "../util/save-to-astra";
 import { getFromAstra } from "../util/get-from-astra";
 
 const url = Astro.request.url;
+const origin = new URL(url).origin;
 const u = Astro.url.searchParams.get("u");
 let poem = "";
+let title = "DataStax × Valentine's Day";
+let ogImageUrl = `${origin}/og-home.png`;
 
 if (u && !poem) {
+  title = `${u} | DataStax × Valentine's Day`;
   const cachedPoem = await getFromAstra({ username: u });
   if (cachedPoem) {
     poem = cachedPoem.poem;
@@ -28,16 +32,45 @@ if (u && !poem) {
     poem = response.outputs[0].outputs[0].results.message.data.text;
     await saveToAstra({ username: u, poem });
   }
+  ogImageUrl = `${origin}/og?poem=${encodeURIComponent(poem.split("\n\n")[0])}&username=${encodeURIComponent(u)}`;
 }
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
-    <!-- @todo -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>{title || "DataStax × Valentine's Day"}</title>
+    <meta
+      name="description"
+      content="Generate a Valentine's Day poem from DataStax to you with AI."
+    />
+    <meta property="og:title" content={title || "DataStax × Valentine's Day"} />
+    <meta
+      property="og:description"
+      content="Generate a Valentine's Day poem from DataStax to you with AI."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={url} />
+    {ogImageUrl && <meta property="og:image" content={ogImageUrl} />}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@datastaxdevs" />
+    {ogImageUrl && <meta name="twitter:image" content={ogImageUrl} />}
+    <link
+      rel="icon"
+      type="image/png"
+      href="/icons/favicon-96x96.png"
+      sizes="96x96"
+    />
+    <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg" />
+    <link rel="shortcut icon" href="/icons/favicon.ico" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="/icons/apple-touch-icon.png"
+    />
+    <link rel="manifest" href="/icons/site.webmanifest" />
   </head>
   <body class="bg-black text-white">
     <Loader client:idle />
