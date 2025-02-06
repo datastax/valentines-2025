@@ -17,13 +17,13 @@ export const GET: APIRoute = async ({ request }) => {
   const markup = html(`<div
     style="color: white;hyphens: auto; word-break: break-word; word-wrap: break-all; background-image: url(${
       new URL(request.url).origin
-    }/og-poem-bg.png); overflow: hidden; text-overflow: ellipsis; background-size: cover; font-family: Sora; height: 100vh; width: 100vw; box-sizing: border-box; background-color: white; font-size: 56px; display: flex; gap: 16px; align-items: center; padding: 40px; font-weight: 600;"
+    }/og-poem-bg.png); overflow: hidden; text-overflow: ellipsis; background-size: cover; font-family: Sora; height: 100vh; width: 100vw; box-sizing: border-box; background-color: white; font-size: 56px; display: flex; gap: 16px; align-items: center; justify-content: space-between; padding: 40px; font-weight: 600;"
   >
     <div style="display: flex; flex-direction: column;white-space: pre-wrap;">${limitedText?.slice(
       0,
       charLimit
     )}${(limitedText?.length ?? 0) > charLimit ? "..." : ""}</div>
-  <div style="display: flex; justify-content: flex-end; width:300px; height:300px; justify-self: flex-end; flex-grow: 0; flex-shrink: 0;"><img style="border: 16px solid white; border-radius: 50%;" alt="${username}" src="https://github.com/${username}.png" width="300" height="300" /></div>
+  <div style="margin-left: auto;display: flex; justify-content: flex-end; width:300px; height:300px; justify-self: flex-end; flex-grow: 0; flex-shrink: 0;"><img style="border: 16px solid white; border-radius: 50%;" alt="${username}" src="https://github.com/${username}.png" width="300" height="300" /></div>
   </div>`);
 
   const fontFile = await fetch(`${url.origin}/fonts/sora-instance.ttf`).then(
