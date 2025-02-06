@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import GA4 from "./GA4.astro";
 
 const url = Astro.request.url;
 const origin = new URL(url).origin;
@@ -50,6 +51,7 @@ const {
       href="/icons/apple-touch-icon.png"
     />
     <link rel="manifest" href="/icons/site.webmanifest" />
+    <GA4 />
   </head>
   <body class="bg-black text-white">
     <slot />
