@@ -36,6 +36,10 @@ if (u && !poem) {
     };
     const response = await getResponse();
     poem = response?.outputs[0]?.outputs[0]?.results?.message?.data?.text;
+    if (!poem) {
+      Astro.redirect("/over-capacity", 302);
+      return;
+    }
     await saveToAstra({ username: u, poem });
   }
   ogImageUrl = `${origin}/og?poem=${encodeURIComponent(poem?.split("\n\n")[0])}&username=${encodeURIComponent(u)}`;
