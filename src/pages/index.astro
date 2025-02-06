@@ -3,15 +3,14 @@ import clsx from "clsx";
 
 import DatastaxLogo from "../components/DatastaxLogo.astro";
 import Form from "../components/Form.astro";
-
-// @ts-ignore
-import { Loader } from "../components/Loader";
 import { saveToAstra } from "../util/save-to-astra";
 import { getFromAstra } from "../util/get-from-astra";
 import Layout from "../components/Layout.astro";
 
 const url = Astro.request.url;
-const u = Astro.url.searchParams.get("u");
+const properUrl = new URL(url);
+const origin = properUrl.origin;
+const u = properUrl.searchParams.get("u");
 let title = "";
 let poem = "";
 let ogImageUrl = "";
