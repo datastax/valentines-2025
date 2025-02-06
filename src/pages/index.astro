@@ -17,7 +17,7 @@ let ogImageUrl = `${origin}/og-home.png`;
 
 if (u && !poem) {
   title = `${u} | DataStax × Valentine's Day`;
-  const cachedPoem = await getFromAstra({ username: u });
+  const cachedPoem = await getFromAstra({ username: u.toLowerCase() });
   if (cachedPoem) {
     poem = cachedPoem.poem;
   } else {
@@ -26,20 +26,20 @@ if (u && !poem) {
       baseUrl: "https://langflow.new",
     });
     const flow = client.flow("00c0fa6d-23f1-4582-a906-cf1101c72c3d");
-    const getResponse = async () => {
-      try {
+    try {
+      const getResponse = async () => {
         return await flow.run(u);
-      } catch (e) {
+      };
+      const response = await getResponse();
+      // @ts-ignore
+      poem = response?.outputs[0]?.outputs[0]?.results?.message?.data?.text;
+      if (!poem) {
         return Astro.redirect("/over-capacity", 302);
       }
-    };
-    const response = await getResponse();
-    // @ts-ignore
-    poem = response?.outputs[0]?.outputs[0]?.results?.message?.data?.text;
-    if (!poem) {
+      await saveToAstra({ username: u.toLowerCase(), poem });
+    } catch (e) {
       return Astro.redirect("/over-capacity", 302);
     }
-    await saveToAstra({ username: u, poem });
   }
   ogImageUrl = `${origin}/og?poem=${encodeURIComponent(poem?.split("\n\n")[0])}&username=${encodeURIComponent(u)}`;
 }
