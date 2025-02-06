@@ -38,7 +38,7 @@ if (u && !poem) {
     poem = response?.outputs[0]?.outputs[0]?.results?.message?.data?.text;
     await saveToAstra({ username: u, poem });
   }
-  ogImageUrl = `${origin}/og?poem=${encodeURIComponent(poem.split("\n\n")[0])}&username=${encodeURIComponent(u)}`;
+  ogImageUrl = `${origin}/og?poem=${encodeURIComponent(poem?.split("\n\n")[0])}&username=${encodeURIComponent(u)}`;
 }
 ---
 
