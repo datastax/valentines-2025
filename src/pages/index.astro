@@ -13,7 +13,7 @@ const origin = properUrl.origin;
 const u = properUrl.searchParams.get("u");
 let title = "";
 let poem = "";
-let ogImageUrl = "";
+let ogImageUrl = `${origin}/og-home.png`;
 
 if (u && !poem) {
   title = `${u} | DataStax × Valentine's Day`;
@@ -95,7 +95,7 @@ if (u && !poem) {
               href="https://langflow.new/valentines"
               class="flex items-center bg-neutral-800 hover:bg-neutral-700 border border-neutral-700 text-white p-2 text-sm font-bold h-10 rounded-md"
             >
-              Explore the Flow
+              Go Under the Hood
             </a>
             <a
               onclick="alert('TODO');return false;"
