@@ -50,7 +50,6 @@ export function Loader() {
           <div className="absolute top-0 left-0 w-full h-full rounded-full border-4 border-white border-t-transparent animate-spin"></div>
           <div
             key={timeLeft}
-            // fuck safari @todo this shouldn't be hidden
             className="top-0 left-0 w-full h-full hidden items-center justify-center text-white text-2xl"
           >
             {timeLeft}
