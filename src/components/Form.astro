@@ -118,11 +118,18 @@
       }
     }, statusInterval);
 
-    // Ensure we reach 100% after 45 seconds
-    setTimeout(() => {
-      width = 100;
-      progress.style.width = "100%";
-      statusElement.textContent = statuses[statuses.length - 1];
-    }, duration);
+    // After 45 seconds, if not complete, restart timer
+    const checkCompletion = () => {
+      if (width < 100) {
+        width = 0;
+        progress.style.width = "0%";
+        statusIndex = 0;
+        statusElement.textContent = statuses[0];
+        updateProgress();
+        setTimeout(checkCompletion, duration);
+      }
+    };
+
+    setTimeout(checkCompletion, duration);
   });
 </script>

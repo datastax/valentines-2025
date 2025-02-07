@@ -88,7 +88,7 @@ if (u && !poem) {
             </a>
             <a
               target="_blank"
-              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`Check out my AI-generated Valentine's Day poem from @datastaxdevs! \n\n${url}`)}`}
+              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`Check out my AI-generated Valentine's Day poem from @datastaxdevs! \\n\\n${url}`)}`}
               class="bg-black hover:bg-neutral-700 flex items-center border border-white text-white p-2 text-sm font-bold h-10 rounded-md"
             >
               Share on 𝕏
@@ -108,7 +108,7 @@ if (u && !poem) {
               Learn How it Works
             </a>
           </div>
-          <pre class="text-left">{poem.trim()}</pre>
+          <pre class="text-left">{poem.trim().replace(/\*\*/g, "")}</pre>
         </div>
       )
     }
