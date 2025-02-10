@@ -25,7 +25,7 @@ if (u && !poem) {
     const client = new langflowClientModule.LangflowClient({
       baseUrl: "https://langflow.new",
     });
-    const flow = client.flow("00c0fa6d-23f1-4582-a906-cf1101c72c3d");
+    const flow = client.flow("3f92bd15-4d2b-4cb8-8270-0b505cd73cbd");
     try {
       const getResponse = async () => {
         return await flow.run(u);
