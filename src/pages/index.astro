@@ -27,12 +27,8 @@ if (u && !poem) {
     });
     const flow = client.flow("3f92bd15-4d2b-4cb8-8270-0b505cd73cbd");
     try {
-      const getResponse = async () => {
-        return await flow.run(u);
-      };
-      const response = await getResponse();
-      // @ts-ignore
-      poem = response?.outputs[0]?.outputs[0]?.results?.message?.data?.text;
+      const response = await flow.run(u);
+      poem = response.chatOutputText();
       if (!poem) {
         return Astro.redirect("/over-capacity", 302);
       }
